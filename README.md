@@ -59,4 +59,4 @@ anpassen. Für kompakte Dashboards können z. B. `max-width`/`max-height` per
 
 ## Lizenz
 
-MIT © Michael Küper
+GPLv3 © Michael Küper

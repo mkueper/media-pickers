@@ -9,7 +9,7 @@
     "react",
     "tenor"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "author": "Michael Küper",
   "private": false,
   "type": "module",
