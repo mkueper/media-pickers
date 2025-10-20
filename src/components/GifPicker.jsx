@@ -61,24 +61,25 @@ const DEFAULT_STYLES = {
     boxShadow: '0 22px 48px rgba(15, 23, 42, 0.28)'
   },
   header: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '12px',
+    display: 'grid',
+    gridTemplateRows: 'auto',
+    gridTemplateColumns: '1fr',
+    gap: '10px',
     alignItems: 'center',
-    padding: '16px',
+    padding: '12px 14px',
     borderBottom: '1px solid rgba(15, 23, 42, 0.08)',
-    background: 'rgba(248, 250, 252, 0.95)'
+    background: 'rgba(248, 250, 252, 0.9)'
   },
   title: {
     flex: '1 1 auto',
-    fontSize: '16px',
+    fontSize: '14px',
     fontWeight: 600,
     color: '#0f172a'
   },
   searchBar: {
     display: 'flex',
     gap: '8px',
-    flex: '1 1 260px',
+    flex: '1 1 auto',
     alignItems: 'center'
   },
   input: {
@@ -90,26 +91,26 @@ const DEFAULT_STYLES = {
     outline: 'none'
   },
   button: {
-    borderRadius: '12px',
+    borderRadius: '10px',
     border: '1px solid rgba(15, 23, 42, 0.15)',
     background: 'rgba(226, 232, 240, 0.6)',
-    padding: '8px 12px',
-    fontSize: '13px',
+    padding: '6px 10px',
+    fontSize: '12px',
     cursor: 'pointer'
   },
   buttonPrimary: {
-    borderRadius: '12px',
+    borderRadius: '10px',
     border: 'none',
     background: '#2563eb',
     color: '#ffffff',
-    padding: '8px 14px',
-    fontSize: '13px',
+    padding: '6px 12px',
+    fontSize: '12px',
     fontWeight: 600,
     cursor: 'pointer'
   },
   content: {
     flex: '1 1 auto',
-    padding: '16px',
+    padding: '12px 16px',
     overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
