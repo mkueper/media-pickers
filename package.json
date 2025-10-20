@@ -1,0 +1,50 @@
+{
+  "name": "@kampagnen-bot/media-pickers",
+  "version": "0.1.0",
+  "description": "Gemeinsame React-Picker für GIFs und Emojis (Tenor, emoji-mart).",
+  "keywords": [
+    "gif",
+    "emoji",
+    "picker",
+    "react",
+    "tenor"
+  ],
+  "license": "MIT",
+  "author": "Michael Küper",
+  "private": false,
+  "type": "module",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "require": "./src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "echo \"Using checked-in sources\"",
+    "lint": "echo \"no lint\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mkueper/media-pickers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mkueper/media-pickers/issues"
+  },
+  "homepage": "https://github.com/mkueper/media-pickers#readme",
+  "peerDependencies": {
+    "@emoji-mart/data": "^1.0.0 || ^1.1.0 || ^1.2.0",
+    "@emoji-mart/react": "^1.0.0 || ^1.1.0",
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  }
+}
