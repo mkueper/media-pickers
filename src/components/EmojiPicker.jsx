@@ -4,8 +4,28 @@ import emojiData from '@emoji-mart/data'
 import { useEmojiPopover } from '../hooks/useEmojiPopover.js'
 
 const defaultClasses = {
-  overlay: 'fixed inset-0 z-[1100] pointer-events-none',
-  panel: 'pointer-events-auto rounded-2xl border border-border bg-background shadow-lg'
+  overlay: '',
+  panel: ''
+}
+
+const DEFAULT_OVERLAY_STYLE = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  pointerEvents: 'none',
+  zIndex: 1100
+}
+
+const DEFAULT_PANEL_STYLE = {
+  position: 'fixed',
+  pointerEvents: 'auto',
+  borderRadius: 16,
+  border: '1px solid rgba(15, 23, 42, 0.12)',
+  background: '#ffffff',
+  boxShadow: '0 18px 36px rgba(15, 23, 42, 0.22)',
+  overflow: 'hidden'
 }
 
 export function EmojiPicker({
@@ -21,9 +41,17 @@ export function EmojiPicker({
   classNames,
   overlayProps,
   panelProps,
-  style
+  style,
+  styles
 }) {
   const mergedClasses = { ...defaultClasses, ...(classNames ?? {}) }
+  const styleOverrides = styles || {}
+  const { className: overlayClassNameProp, style: overlayStyleProp, ...restOverlayProps } = overlayProps || {}
+  const { className: panelClassNameProp, style: panelStyleProp, ...restPanelProps } = panelProps || {}
+  const overlayClassName = [mergedClasses.overlay, overlayClassNameProp].filter(Boolean).join(' ')
+  const panelClassName = [mergedClasses.panel, panelClassNameProp].filter(Boolean).join(' ')
+  const overlayStyle = { ...DEFAULT_OVERLAY_STYLE, ...(styleOverrides.overlay || {}), ...(overlayStyleProp || {}) }
+  const panelStyleBase = { ...DEFAULT_PANEL_STYLE, ...(styleOverrides.panel || {}), ...(panelStyleProp || {}) }
   const { position, setPopoverRef, updatePosition } = useEmojiPopover({
     anchorRef,
     open,
@@ -64,25 +92,24 @@ export function EmojiPicker({
 
   return (
     <div
-      {...overlayProps}
-      className={[mergedClasses.overlay, overlayProps?.className].filter(Boolean).join(' ')}
+      {...restOverlayProps}
+      className={overlayClassName}
+      style={overlayStyle}
       role='presentation'
       aria-hidden
     >
       <div
-        {...panelProps}
+        {...restPanelProps}
         id='kb-emoji-picker-panel'
         ref={setPopoverRef}
-        className={[mergedClasses.panel, panelProps?.className].filter(Boolean).join(' ')}
+        className={panelClassName}
         style={{
-          position: 'fixed',
+          ...panelStyleBase,
           top: position.top,
           left: position.left,
           width: `min(${maxWidth}px, 95vw)`,
           maxHeight: `min(${maxHeight}px, 85vh)`,
-          overflow: 'hidden',
-          ...style,
-          ...panelProps?.style
+          ...style
         }}
       >
         <Picker

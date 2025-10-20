@@ -3,13 +3,31 @@ import { useCallback, useMemo, useState } from 'react'
 const DEFAULT_FEATURED_LIMIT = 24
 const DEFAULT_SEARCH_LIMIT = 48
 
+const extractJson = async (res, context) => {
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    const trimmed = text.trim()
+    if (trimmed.startsWith('<')) {
+      throw new Error(`${context}: Unerwartete HTML-Antwort (HTTP ${res.status}).`)
+    }
+    throw new Error(trimmed || `${context}: HTTP ${res.status}`)
+  }
+  try {
+    return await res.clone().json()
+  } catch (err) {
+    const text = await res.text().catch(() => '')
+    const trimmed = text.trim()
+    if (trimmed.startsWith('<')) {
+      throw new Error(`${context}: Keine JSON-Antwort (HTML erhalten).`)
+    }
+    throw new Error(trimmed || `${context}: Antwort konnte nicht gelesen werden.`)
+  }
+}
+
 const defaultFetcher = async (endpoint, params) => {
   const url = `/api/tenor/${endpoint}?${params.toString()}`
   const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(`Tenor request failed (HTTP ${res.status})`)
-  }
-  return res.json()
+  return extractJson(res, 'Tenor Proxy')
 }
 
 const parseSize = (value) => {
@@ -67,6 +85,9 @@ export function useTenorSearch(options = {}) {
     async (endpoint, params) => {
       try {
         const data = await fetcher(endpoint, params)
+        if (!data || typeof data !== 'object') {
+          throw new Error('Tenor: Leere Antwort erhalten.')
+        }
         return data
       } catch (err) {
         const message =

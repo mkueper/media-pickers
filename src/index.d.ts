@@ -45,6 +45,25 @@ export interface GifPickerClassNames {
   error?: string
 }
 
+export interface GifPickerStyles {
+  overlay?: CSSProperties
+  panel?: CSSProperties
+  header?: CSSProperties
+  title?: CSSProperties
+  searchBar?: CSSProperties
+  input?: CSSProperties
+  button?: CSSProperties
+  buttonPrimary?: CSSProperties
+  content?: CSSProperties
+  grid?: CSSProperties
+  itemButton?: CSSProperties
+  image?: CSSProperties
+  statusText?: CSSProperties
+  footer?: CSSProperties
+  skeleton?: CSSProperties
+  error?: CSSProperties
+}
+
 export type TenorFetcher = (endpoint: 'featured' | 'search', params: URLSearchParams) => Promise<any>
 
 export interface GifPickerProps {
@@ -59,6 +78,7 @@ export interface GifPickerProps {
   classNames?: GifPickerClassNames
   overlayProps?: HTMLAttributes<HTMLDivElement>
   panelProps?: HTMLAttributes<HTMLDivElement>
+  styles?: Partial<GifPickerStyles>
   autoFocus?: boolean
 }
 
@@ -90,6 +110,10 @@ export interface EmojiPickerProps {
   overlayProps?: HTMLAttributes<HTMLDivElement>
   panelProps?: HTMLAttributes<HTMLDivElement>
   style?: CSSProperties
+  styles?: {
+    overlay?: CSSProperties
+    panel?: CSSProperties
+  }
 }
 
 export declare function EmojiPicker(props: EmojiPickerProps): JSX.Element | null

@@ -16,26 +16,146 @@ const defaultLabels = {
 }
 
 const defaultClasses = {
-  overlay: 'fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm',
-  panel: 'relative w-[min(920px,92vw)] max-h-[88vh] overflow-hidden rounded-2xl border border-border bg-background shadow-lg flex flex-col',
-  header: 'flex items-center gap-3 border-b border-border bg-background-subtle px-4 py-3',
-  title: 'flex-1 text-base font-semibold text-foreground',
-  searchBar: 'flex flex-1 items-center gap-2',
-  input:
-    'flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/40',
-  button:
-    'rounded-xl border border-border bg-background-subtle px-3 py-2 text-sm font-medium text-foreground transition hover:bg-background',
-  buttonPrimary:
-    'rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed',
-  content: 'flex-1 overflow-y-auto px-4 py-4 space-y-3',
-  grid: 'grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4',
-  itemButton:
-    'overflow-hidden rounded-xl border border-border bg-background-subtle transition hover:ring-2 hover:ring-primary/40',
-  image: 'h-32 w-full object-cover',
-  statusText: 'text-sm text-foreground-muted',
-  footer: 'border-t border-border bg-background-subtle px-4 py-3 text-right text-xs text-foreground-muted',
-  skeleton: 'h-32 w-full animate-pulse rounded-xl border border-border bg-background-subtle',
-  error: 'text-sm text-destructive'
+  overlay: '',
+  panel: '',
+  header: '',
+  title: '',
+  searchBar: '',
+  input: '',
+  button: '',
+  buttonPrimary: '',
+  content: '',
+  grid: '',
+  itemButton: '',
+  image: '',
+  statusText: '',
+  footer: '',
+  skeleton: '',
+  error: ''
+}
+
+const DEFAULT_STYLES = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(15, 23, 42, 0.45)',
+    backdropFilter: 'blur(2px)',
+    zIndex: 1000,
+    padding: '12px'
+  },
+  panel: {
+    width: 'min(580px, 92vw)',
+    maxHeight: '82vh',
+    borderRadius: '18px',
+    border: '1px solid rgba(30, 41, 59, 0.12)',
+    background: '#ffffff',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    boxShadow: '0 22px 48px rgba(15, 23, 42, 0.28)'
+  },
+  header: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '12px',
+    alignItems: 'center',
+    padding: '16px',
+    borderBottom: '1px solid rgba(15, 23, 42, 0.08)',
+    background: 'rgba(248, 250, 252, 0.95)'
+  },
+  title: {
+    flex: '1 1 auto',
+    fontSize: '16px',
+    fontWeight: 600,
+    color: '#0f172a'
+  },
+  searchBar: {
+    display: 'flex',
+    gap: '8px',
+    flex: '1 1 260px',
+    alignItems: 'center'
+  },
+  input: {
+    flex: '1 1 auto',
+    borderRadius: '12px',
+    border: '1px solid rgba(15, 23, 42, 0.18)',
+    padding: '8px 12px',
+    fontSize: '14px',
+    outline: 'none'
+  },
+  button: {
+    borderRadius: '12px',
+    border: '1px solid rgba(15, 23, 42, 0.15)',
+    background: 'rgba(226, 232, 240, 0.6)',
+    padding: '8px 12px',
+    fontSize: '13px',
+    cursor: 'pointer'
+  },
+  buttonPrimary: {
+    borderRadius: '12px',
+    border: 'none',
+    background: '#2563eb',
+    color: '#ffffff',
+    padding: '8px 14px',
+    fontSize: '13px',
+    fontWeight: 600,
+    cursor: 'pointer'
+  },
+  content: {
+    flex: '1 1 auto',
+    padding: '16px',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    background: '#f8fafc'
+  },
+  grid: {
+    display: 'grid',
+    gap: '12px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))'
+  },
+  itemButton: {
+    borderRadius: '14px',
+    border: '1px solid rgba(15, 23, 42, 0.12)',
+    overflow: 'hidden',
+    background: '#ffffff',
+    padding: 0,
+    cursor: 'pointer'
+  },
+  image: {
+    width: '100%',
+    height: '140px',
+    objectFit: 'cover',
+    display: 'block'
+  },
+  statusText: {
+    fontSize: '13px',
+    color: 'rgba(30, 41, 59, 0.7)'
+  },
+  footer: {
+    borderTop: '1px solid rgba(15, 23, 42, 0.08)',
+    padding: '12px 16px',
+    textAlign: 'right',
+    fontSize: '12px',
+    color: 'rgba(30, 41, 59, 0.65)'
+  },
+  skeleton: {
+    height: '140px',
+    borderRadius: '14px',
+    border: '1px solid rgba(15, 23, 42, 0.08)',
+    background: 'rgba(226, 232, 240, 0.7)'
+  },
+  error: {
+    fontSize: '13px',
+    color: '#dc2626'
+  }
 }
 
 const parseSize = (value) => {
@@ -72,10 +192,22 @@ export function GifPicker({
   classNames,
   overlayProps,
   panelProps,
+  styles,
   autoFocus = true
 }) {
   const mergedLabels = { ...defaultLabels, ...(labels ?? {}) }
   const mergedClasses = { ...defaultClasses, ...(classNames ?? {}) }
+  const styleOverrides = styles || {}
+  const styleFor = (key) => ({
+    ...DEFAULT_STYLES[key],
+    ...(styleOverrides[key] || {})
+  })
+  const { className: overlayClassNameProp, style: overlayStyleProp, ...restOverlayProps } = overlayProps || {}
+  const { className: panelClassNameProp, style: panelStyleProp, ...restPanelProps } = panelProps || {}
+  const overlayClassName = [mergedClasses.overlay, overlayClassNameProp].filter(Boolean).join(' ')
+  const panelClassName = [mergedClasses.panel, panelClassNameProp].filter(Boolean).join(' ')
+  const overlayStyle = { ...styleFor('overlay'), ...(overlayStyleProp || {}) }
+  const panelStyle = { ...styleFor('panel'), ...(panelStyleProp || {}) }
   const {
     items,
     loading,
@@ -163,9 +295,9 @@ export function GifPicker({
   const renderGrid = () => {
     if (loading && items.length === 0) {
       return (
-        <div className={mergedClasses.grid}>
+        <div className={mergedClasses.grid} style={styleFor('grid')}>
           {skeletonItems.map((_, index) => (
-            <div key={index} className={mergedClasses.skeleton} />
+            <div key={index} className={mergedClasses.skeleton} style={styleFor('skeleton')} />
           ))}
         </div>
       )
@@ -173,19 +305,20 @@ export function GifPicker({
 
     if (!loading && items.length === 0) {
       return (
-        <p className={mergedClasses.statusText}>
+        <p className={mergedClasses.statusText} style={styleFor('statusText')}>
           {mode === 'search' ? mergedLabels.emptySearch : mergedLabels.emptyFeatured}
         </p>
       )
     }
 
     return (
-      <div className={mergedClasses.grid}>
+      <div className={mergedClasses.grid} style={styleFor('grid')}>
         {items.map((item) => (
           <button
             key={item.id}
             type='button'
             className={mergedClasses.itemButton}
+            style={styleFor('itemButton')}
             onClick={() => {
               const [variantKey, variant] = pickVariant(item.variants, maxBytes)
               if (!variant?.url) return
@@ -198,12 +331,13 @@ export function GifPicker({
               })
             }}
           >
-            <img
-              src={item.previewUrl || ''}
-              alt='GIF'
-              className={mergedClasses.image}
-              loading='lazy'
-            />
+                  <img
+                    src={item.previewUrl || ''}
+                    alt='GIF'
+                    className={mergedClasses.image}
+                    loading='lazy'
+                    style={styleFor('image')}
+                  />
           </button>
         ))}
       </div>
@@ -214,8 +348,9 @@ export function GifPicker({
 
   return (
     <div
-      {...overlayProps}
-      className={[mergedClasses.overlay, overlayProps?.className].filter(Boolean).join(' ')}
+      {...restOverlayProps}
+      className={overlayClassName}
+      style={overlayStyle}
       onClick={(event) => {
         if (event.target === event.currentTarget) {
           onClose()
@@ -224,12 +359,13 @@ export function GifPicker({
       role='presentation'
     >
       <div
-        {...panelProps}
-        className={[mergedClasses.panel, panelProps?.className].filter(Boolean).join(' ')}
+        {...restPanelProps}
+        className={panelClassName}
+        style={panelStyle}
       >
-        <div className={mergedClasses.header}>
-          <div className={mergedClasses.title}>{mergedLabels.title}</div>
-          <div className={mergedClasses.searchBar}>
+        <div className={mergedClasses.header} style={styleFor('header')}>
+          <div className={mergedClasses.title} style={styleFor('title')}>{mergedLabels.title}</div>
+          <div className={mergedClasses.searchBar} style={styleFor('searchBar')}>
             <input
               ref={inputRef}
               value={query}
@@ -242,16 +378,23 @@ export function GifPicker({
               }}
               placeholder={mergedLabels.searchPlaceholder}
               className={mergedClasses.input}
+              style={styleFor('input')}
             />
             <button
               type='button'
               className={mergedClasses.buttonPrimary}
+              style={styleFor('buttonPrimary')}
               onClick={submitSearch}
               disabled={loading || !query.trim()}
             >
               {mergedLabels.searchButton}
             </button>
-            <button type='button' className={mergedClasses.button} onClick={onClose}>
+            <button
+              type='button'
+              className={mergedClasses.button}
+              style={styleFor('button')}
+              onClick={onClose}
+            >
               {mergedLabels.closeButton}
             </button>
           </div>
@@ -260,23 +403,30 @@ export function GifPicker({
         <div
           ref={listRef}
           className={mergedClasses.content}
+          style={styleFor('content')}
           onScroll={onScroll}
           aria-busy={loading}
         >
           {error ? (
-            <p className={mergedClasses.error}>
+            <p className={mergedClasses.error} style={styleFor('error')}>
               {mergedLabels.errorPrefix}: {error}
             </p>
           ) : null}
           {renderGrid()}
-          {loadingMore ? <p className={mergedClasses.statusText}>{mergedLabels.loadingMore}</p> : null}
+          {loadingMore ? (
+            <p className={mergedClasses.statusText} style={styleFor('statusText')}>
+              {mergedLabels.loadingMore}
+            </p>
+          ) : null}
           {!loading && !loadingMore && hasMore && items.length > 0 ? (
-            <p className={mergedClasses.statusText}>{mergedLabels.loadMoreHint}</p>
+            <p className={mergedClasses.statusText} style={styleFor('statusText')}>
+              {mergedLabels.loadMoreHint}
+            </p>
           ) : null}
         </div>
 
         {!loading && !loadingMore && !hasMore && items.length > 0 ? (
-          <div className={mergedClasses.footer}>Keine weiteren GIFs verfügbar.</div>
+          <div className={mergedClasses.footer} style={styleFor('footer')}>Keine weiteren GIFs verfügbar.</div>
         ) : null}
       </div>
     </div>
