@@ -31,7 +31,8 @@
   ],
   "scripts": {
     "build": "echo \"Using checked-in sources\"",
-    "lint": "echo \"no lint\""
+    "lint": "echo \"no lint\"",
+    "install:all": "npm install"
   },
   "repository": {
     "type": "git",
