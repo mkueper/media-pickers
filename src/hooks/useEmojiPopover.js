@@ -25,13 +25,15 @@ export function useEmojiPopover({
       const width = Math.min(maxWidth, Math.floor(vw * 0.95))
       const height = Math.min(maxHeight, Math.floor(vh * 0.85))
 
-      let top =
-        verticalAlign === 'center'
-          ? rect.top + rect.height / 2
-          : rect.bottom + margin
+      let top
+      if (verticalAlign === 'center') {
+        top = rect.top + rect.height / 2 - height / 2
+      } else {
+        top = rect.bottom + margin
+      }
       let left = rect.left + rect.width / 2 - width / 2
 
-      if (top + height > vh - margin) {
+      if (verticalAlign !== 'center' && top + height > vh - margin) {
         top = Math.max(margin, rect.top - height - margin)
       }
       if (top < margin) {
@@ -48,7 +50,7 @@ export function useEmojiPopover({
     } catch {
       // ignore
     }
-  }, [anchorRef, margin, maxHeight, maxWidth])
+  }, [anchorRef, margin, maxHeight, maxWidth, verticalAlign])
 
   useEffect(() => {
     if (!open) return
