@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+const getWindow = () => (typeof globalThis !== 'undefined' && globalThis.window ? globalThis.window : undefined)
+
 export function useEmojiPopover({
   anchorRef,
   open,
@@ -17,11 +19,13 @@ export function useEmojiPopover({
 
   const updatePosition = useCallback(() => {
     try {
+      const win = getWindow()
+      if (!win) return
       const anchor = anchorRef.current
       if (!anchor) return
       const rect = anchor.getBoundingClientRect()
-      const vw = window.innerWidth
-      const vh = window.innerHeight
+      const vw = win.innerWidth
+      const vh = win.innerHeight
       const width = Math.min(maxWidth, Math.floor(vw * 0.95))
       const height = Math.min(maxHeight, Math.floor(vh * 0.85))
 
@@ -58,13 +62,14 @@ export function useEmojiPopover({
   }, [open, updatePosition])
 
   useEffect(() => {
-    if (!open) return
+    const win = getWindow()
+    if (!open || !win) return
     const handler = () => updatePosition()
-    window.addEventListener('resize', handler)
-    window.addEventListener('scroll', handler, true)
+    win.addEventListener('resize', handler)
+    win.addEventListener('scroll', handler, true)
     return () => {
-      window.removeEventListener('resize', handler)
-      window.removeEventListener('scroll', handler, true)
+      win.removeEventListener('resize', handler)
+      win.removeEventListener('scroll', handler, true)
     }
   }, [open, updatePosition])
 

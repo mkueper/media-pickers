@@ -64,7 +64,10 @@ export interface GifPickerStyles {
   error?: CSSProperties
 }
 
-export type TenorFetcher = (endpoint: 'featured' | 'search', params: URLSearchParams) => Promise<any>
+export type TenorFetcher = (
+  endpoint: 'featured' | 'search',
+  params: URLSearchParams
+) => Promise<unknown>
 
 export interface GifPickerProps {
   open: boolean

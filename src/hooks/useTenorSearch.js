@@ -14,7 +14,7 @@ const extractJson = async (res, context) => {
   }
   try {
     return await res.clone().json()
-  } catch (err) {
+  } catch {
     const text = await res.text().catch(() => '')
     const trimmed = text.trim()
     if (trimmed.startsWith('<')) {
@@ -24,9 +24,23 @@ const extractJson = async (res, context) => {
   }
 }
 
+const ensureFetch = () => {
+  if (typeof globalThis.fetch === 'function') {
+    return globalThis.fetch.bind(globalThis)
+  }
+  throw new Error('Fetch API ist in dieser Umgebung nicht verfügbar.')
+}
+
+const createSearchParams = (init) => {
+  if (typeof globalThis.URLSearchParams === 'function') {
+    return new globalThis.URLSearchParams(init)
+  }
+  throw new Error('URLSearchParams ist in dieser Umgebung nicht verfügbar.')
+}
+
 const defaultFetcher = async (endpoint, params) => {
   const url = `/api/tenor/${endpoint}?${params.toString()}`
-  const res = await fetch(url)
+  const res = await ensureFetch()(url)
   return extractJson(res, 'Tenor Proxy')
 }
 
@@ -102,7 +116,7 @@ export function useTenorSearch(options = {}) {
     setLoading(true)
     setError(null)
     try {
-      const params = new URLSearchParams({ limit: String(featuredLimit) })
+      const params = createSearchParams({ limit: String(featuredLimit) })
       const data = await fetchTenor('featured', params)
       const mapped = mapTenorResults(data?.results ?? [])
       setItems(mapped)
@@ -128,7 +142,7 @@ export function useTenorSearch(options = {}) {
       setLoading(true)
       setError(null)
       try {
-        const params = new URLSearchParams({ limit: String(searchLimit), q: trimmed })
+        const params = createSearchParams({ limit: String(searchLimit), q: trimmed })
         const data = await fetchTenor('search', params)
         const mapped = mapTenorResults(data?.results ?? [])
         setItems(mapped)
@@ -158,7 +172,7 @@ export function useTenorSearch(options = {}) {
     setLoadingMore(true)
     setError(null)
     try {
-      const params = new URLSearchParams({
+      const params = createSearchParams({
         limit: String(mode === 'featured' ? featuredLimit : searchLimit),
         pos: nextPos
       })
