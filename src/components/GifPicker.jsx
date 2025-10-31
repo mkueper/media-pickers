@@ -1,8 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTenorSearch } from '../hooks/useTenorSearch.js'
 
+/**
+ * Rendert einen Tenor-basierten GIF-Picker als Overlay mit Suche, Lazy Loading und
+ * umfangreichen Styling-Hooks. Die Komponente verwaltet Fokus, Scroll-Verhalten und
+ * sorgt für ein barrierearmes Nutzererlebnis beim Auswählen animierter GIFs.
+ */
 const DEFAULT_MAX_BYTES = 8 * 1024 * 1024
 
+/**
+ * Deutsche Standard-Beschriftungen für UI-Elemente und Statusmeldungen.
+ */
 const defaultLabels = {
   title: 'GIF suchen (Tenor)',
   searchPlaceholder: 'Suchbegriff',
@@ -15,6 +23,9 @@ const defaultLabels = {
   errorPrefix: 'Fehler'
 }
 
+/**
+ * CSS-Klassen, die Aufrufer:innen für eine feinere Kontrolle über das Styling überschreiben können.
+ */
 const defaultClasses = {
   overlay: '',
   panel: '',
@@ -34,6 +45,10 @@ const defaultClasses = {
   error: ''
 }
 
+/**
+ * Voreinstellungen, die das Erscheinungsbild der einzelnen Bereiche definieren und optional
+ * über `styles` modifiziert werden können.
+ */
 const DEFAULT_STYLES = {
   overlay: {
     position: 'fixed',
@@ -159,11 +174,17 @@ const DEFAULT_STYLES = {
   }
 }
 
+/**
+ * Konvertiert Tenor-Größenangaben in Bytes oder liefert 0, falls kein valider Wert vorliegt.
+ */
 const parseSize = (value) => {
   if (typeof value === 'number' && Number.isFinite(value)) return value
   return 0
 }
 
+/**
+ * Wählt die bestmögliche GIF-Variante basierend auf dem erlaubten Payload-Limit aus.
+ */
 const pickVariant = (variants, maxBytes) => {
   const order = ['nanogif', 'tinygif', 'gif']
   for (const key of order) {
@@ -181,6 +202,23 @@ const pickVariant = (variants, maxBytes) => {
   return ['', null]
 }
 
+/**
+ * Präsentiert einen modalen GIF-Auswahldialog inklusive Suche, Paging und Fehlerbehandlung.
+ * @param {object} props - Komponenteneigenschaften für Konfiguration und Integration.
+ * @param {boolean} props.open - Steuert, ob das Overlay sichtbar ist.
+ * @param {() => void} props.onClose - Callback zum Schließen des Pickers.
+ * @param {(gif: object) => void} props.onPick - Liefert das ausgewählte GIF samt Varianteninfo.
+ * @param {number} [props.maxBytes] - Maximale Dateigröße der Variante, bevor Ausweichvarianten gewählt werden.
+ * @param {Function} [props.fetcher] - Custom-Fetcher, um Tenor-Aufrufe z. B. zu mocken.
+ * @param {number} [props.featuredLimit] - Anzahl der anfänglich geladenen Featured-GIFs.
+ * @param {number} [props.searchLimit] - Limit für die Treffer pro Suchanfrage.
+ * @param {Record<string, string>} [props.labels] - Überschreibt die UI-Beschriftungen.
+ * @param {Record<string, string>} [props.classNames] - Zusätzliche Klassen pro Layout-Sektion.
+ * @param {object} [props.overlayProps] - Wird auf das Overlay-Element gemappt.
+ * @param {object} [props.panelProps] - Wird auf das Panel-Element gemappt.
+ * @param {Record<string, object>} [props.styles] - Inline-Stil-Overrides je Bereich.
+ * @param {boolean} [props.autoFocus] - Aktiviert die automatische Fokussierung des Suchfeldes.
+ */
 export function GifPicker({
   open,
   onClose,
@@ -199,6 +237,9 @@ export function GifPicker({
   const mergedLabels = { ...defaultLabels, ...(labels ?? {}) }
   const mergedClasses = { ...defaultClasses, ...(classNames ?? {}) }
   const styleOverrides = styles || {}
+  /**
+   * Utility, um Default-Stile mit External-Overrides pro Abschnitt zu verschmelzen.
+   */
   const styleFor = (key) => ({
     ...DEFAULT_STYLES[key],
     ...(styleOverrides[key] || {})
@@ -225,7 +266,9 @@ export function GifPicker({
   const inputRef = useRef(null)
   const listRef = useRef(null)
   const shouldAutoFocus = autoFocus && open
-
+  /**
+   * Beim Öffnen Featured-Inhalte laden; beim Schließen State zurücksetzen.
+   */
   useEffect(() => {
     if (!open) {
       setQuery('')
@@ -241,6 +284,9 @@ export function GifPicker({
     return () => window.clearTimeout(id)
   }, [open, shouldAutoFocus])
 
+  /**
+   * Escape-Key zum Schließen registrieren und Scrollen des Body bei geöffnetem Overlay verhindern.
+   */
   useEffect(() => {
     if (!open) return
     const handleKey = (event) => {
@@ -273,6 +319,9 @@ export function GifPicker({
     await loadMore()
   }, [loadMore, open])
 
+  /**
+   * Beobachtet Scroll-Position, um bei Bedarf weitere GIFs aus Tenor nachzuladen.
+   */
   const onScroll = useCallback(() => {
     const el = listRef.current
     if (!el || loading || loadingMore || !hasMore) return
@@ -282,6 +331,9 @@ export function GifPicker({
     }
   }, [loading, loadingMore, hasMore, handleLoadMore])
 
+  /**
+   * Edge Case: Wenn der initiale Inhalt nicht scrollt, trotzdem weitere Daten anfordern.
+   */
   useEffect(() => {
     if (!open || !hasMore || loading || loadingMore) return
     const el = listRef.current
@@ -291,8 +343,14 @@ export function GifPicker({
     }
   }, [open, items, hasMore, loading, loadingMore, handleLoadMore])
 
+  /**
+   * Platzhalter-Array für Skeleton-Karten, um Layout beim Laden zu stabilisieren.
+   */
   const skeletonItems = useMemo(() => Array.from({ length: 8 }), [])
 
+  /**
+   * Rendert den GIF-Content-Bereich abhängig vom Ladezustand und der Trefferliste.
+   */
   const renderGrid = () => {
     if (loading && items.length === 0) {
       return (
@@ -332,13 +390,13 @@ export function GifPicker({
               })
             }}
           >
-                  <img
-                    src={item.previewUrl || ''}
-                    alt='GIF'
-                    className={mergedClasses.image}
-                    loading='lazy'
-                    style={styleFor('image')}
-                  />
+            <img
+              src={item.previewUrl || ''}
+              alt='GIF'
+              className={mergedClasses.image}
+              loading='lazy'
+              style={styleFor('image')}
+            />
           </button>
         ))}
       </div>

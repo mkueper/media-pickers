@@ -3,11 +3,20 @@ import Picker from '@emoji-mart/react'
 import emojiData from '@emoji-mart/data'
 import { useEmojiPopover } from '../hooks/useEmojiPopover.js'
 
+/**
+ * Stellt einen Emoji-Picker als Popover dar, der sich relativ zu einem Anker-Element positioniert.
+ * Der Picker verwaltet sowohl Fokus- als auch Escape-Key-Handhabung und schließt sich, wenn
+ * außerhalb des Panels geklickt wird. Die Komponente ist bewusst stilunabhängig und erlaubt
+ * umfassendes Styling via Klassen- und Inline-Overrides.
+ */
 const defaultClasses = {
   overlay: '',
   panel: ''
 }
 
+/**
+ * Basis-Styling für den transparenten Overlay, der Tastaturfokus und Klicks abfängt.
+ */
 const DEFAULT_OVERLAY_STYLE = {
   position: 'fixed',
   top: 0,
@@ -18,6 +27,9 @@ const DEFAULT_OVERLAY_STYLE = {
   zIndex: 1100
 }
 
+/**
+ * Basis-Styling für das Popover-Panel, das den eigentlichen Emoji-Picker enthält.
+ */
 const DEFAULT_PANEL_STYLE = {
   position: 'fixed',
   pointerEvents: 'auto',
@@ -44,6 +56,9 @@ export function EmojiPicker({
   style,
   styles
 }) {
+  /**
+   * Klassen- und Stil-Overrides zusammenführen, damit Aufrufer:innen nur einzelne Schlüssel überschreiben müssen.
+   */
   const mergedClasses = { ...defaultClasses, ...(classNames ?? {}) }
   const styleOverrides = styles || {}
   const { className: overlayClassNameProp, style: overlayStyleProp, ...restOverlayProps } = overlayProps || {}
@@ -52,6 +67,9 @@ export function EmojiPicker({
   const panelClassName = [mergedClasses.panel, panelClassNameProp].filter(Boolean).join(' ')
   const overlayStyle = { ...DEFAULT_OVERLAY_STYLE, ...(styleOverrides.overlay || {}), ...(overlayStyleProp || {}) }
   const panelStyleBase = { ...DEFAULT_PANEL_STYLE, ...(styleOverrides.panel || {}), ...(panelStyleProp || {}) }
+  /**
+   * useEmojiPopover berechnet und aktualisiert die Position relativ zum Anker-Element.
+   */
   const { position, setPopoverRef, updatePosition } = useEmojiPopover({
     anchorRef,
     open,
@@ -60,6 +78,9 @@ export function EmojiPicker({
     verticalAlign
   })
 
+  /**
+   * Schließen des Popovers mittels Escape-Taste oder Klick außerhalb von Panel bzw. Anker.
+   */
   useEffect(() => {
     if (!open) return
     const handleKey = (event) => {
@@ -83,6 +104,9 @@ export function EmojiPicker({
     }
   }, [open, onClose, anchorRef])
 
+  /**
+   * Position nach dem Öffnen aktualisieren, damit Layout-Änderungen berücksichtigt werden.
+   */
   useEffect(() => {
     if (!open) return
     updatePosition()
