@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Picker from '@emoji-mart/react'
 import emojiData from '@emoji-mart/data'
+import '../styles/emoji-mart.css'
 import { useEmojiPopover } from '../hooks/useEmojiPopover.js'
 
 const defaultClasses = {
