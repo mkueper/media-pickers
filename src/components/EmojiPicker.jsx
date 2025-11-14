@@ -108,7 +108,7 @@ export function EmojiPicker({
           top: position.top,
           left: position.left,
           width: `min(${maxWidth}px, 95vw)`,
-          maxHeight: `min(${maxHeight}px, 85vh)`,
+          height: `min(${maxHeight}px, 85vh)`,
           ...style
         }}
       >
@@ -116,6 +116,7 @@ export function EmojiPicker({
           data={emojiData}
           locale={locale}
           theme={theme}
+          set='native'
           navPosition='top'
           previewPosition='none'
           searchPosition='sticky'
