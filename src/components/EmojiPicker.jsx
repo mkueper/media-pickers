@@ -96,7 +96,6 @@ export function EmojiPicker({
       className={overlayClassName}
       style={overlayStyle}
       role='presentation'
-      aria-hidden
     >
       <div
         {...restPanelProps}
