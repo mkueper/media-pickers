@@ -16,11 +16,13 @@ const defaultLabels = {
   searchPlaceholder: 'Suchbegriff',
   searchButton: 'Suchen',
   closeButton: 'Schließen',
+  imageAlt: 'GIF',
   emptyFeatured: 'Keine GIFs verfügbar.',
   emptySearch: 'Keine GIFs gefunden. Bitte anderen Suchbegriff probieren.',
   loadingMore: 'Weitere GIFs werden geladen…',
   loadMoreHint: 'Scroll weiter nach unten, um mehr GIFs zu laden.',
-  errorPrefix: 'Fehler'
+  errorPrefix: 'Fehler',
+  footerEmpty: 'Keine weiteren GIFs verfügbar.'
 }
 
 /**
@@ -392,7 +394,7 @@ export function GifPicker({
           >
             <img
               src={item.previewUrl || ''}
-              alt='GIF'
+              alt={mergedLabels.imageAlt}
               className={mergedClasses.image}
               loading='lazy'
               style={styleFor('image')}
@@ -485,7 +487,9 @@ export function GifPicker({
         </div>
 
         {!loading && !loadingMore && !hasMore && items.length > 0 ? (
-          <div className={mergedClasses.footer} style={styleFor('footer')}>Keine weiteren GIFs verfügbar.</div>
+          <div className={mergedClasses.footer} style={styleFor('footer')}>
+            {mergedLabels.footerEmpty}
+          </div>
         ) : null}
       </div>
     </div>
